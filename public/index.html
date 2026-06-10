@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Become an AI Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#08080f;
+      --surface:#111119;
+      --accent:#5B5FEF;
+      --accent2:#00E5C3;
+      --text:#f0f0fa;
+      --muted:#7a7a9a;
+      --border:rgba(255,255,255,0.08);
+      --error:#ff4d4d;
+      --success:#00E5C3;
+    }
+    body{
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .login-wrap{
+      width:100%;
+      max-width:440px;
+    }
+    .logo{
+      text-align:center;
+      margin-bottom:48px;
+    }
+    .logo-text{
+      font-family:'Syne',sans-serif;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .logo-text span{color:var(--accent2)}
+    .login-card{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:40px;
+    }
+    .login-title{
+      font-family:'Syne',sans-serif;
+      font-size:26px;
+      font-weight:800;
+      margin-bottom:8px;
+      letter-spacing:-0.5px;
+    }
+    .login-sub{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:32px;
+      line-height:1.5;
+    }
+    .form-group{
+      margin-bottom:20px;
+    }
+    .form-label{
+      display:block;
+      font-size:12px;
+      font-weight:500;
+      color:var(--muted);
+      margin-bottom:8px;
+      letter-spacing:0.5px;
+      text-transform:uppercase;
+    }
+    .form-input{
+      width:100%;
+      background:rgba(255,255,255,0.05);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:14px 16px;
+      color:var(--text);
+      font-family:'DM Sans',sans-serif;
+      font-size:16px;
+      outline:none;
+      transition:border-color 0.2s;
+    }
+    .form-input:focus{
+      border-color:var(--accent);
+    }
+    .form-input::placeholder{color:var(--muted)}
+    .btn{
+      width:100%;
+      padding:15px;
+      border-radius:10px;
+      font-family:'Syne',sans-serif;
+      font-weight:700;
+      font-size:15px;
+      border:none;
+      cursor:pointer;
+      transition:opacity 0.2s, transform 0.1s;
+    }
+    .btn:active{transform:scale(0.98)}
+    .btn-primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .btn-primary:hover{opacity:0.9}
+    .btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+    .message{
+      margin-top:16px;
+      padding:12px 16px;
+      border-radius:10px;
+      font-size:14px;
+      text-align:center;
+      display:none;
+    }
+    .message.error{
+      background:rgba(255,77,77,0.1);
+      border:1px solid rgba(255,77,77,0.3);
+      color:var(--error);
+      display:block;
+    }
+    .message.success{
+      background:rgba(0,229,195,0.1);
+      border:1px solid rgba(0,229,195,0.3);
+      color:var(--success);
+      display:block;
+    }
+    .otp-section{display:none}
+    .otp-hint{
+      font-size:13px;
+      color:var(--muted);
+      text-align:center;
+      margin-top:16px;
+    }
+    .otp-hint span{
+      color:var(--accent2);
+      cursor:pointer;
+    }
+    .loading{
+      display:inline-block;
+      width:16px;
+      height:16px;
+      border:2px solid rgba(255,255,255,0.3);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin 0.8s linear infinite;
+      margin-right:8px;
+      vertical-align:middle;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .footer-note{
+      text-align:center;
+      margin-top:24px;
+      font-size:13px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="logo">
+    <div class="logo-text">Become <span>AI</span> Engineer</div>
+  </div>
+
+  <div class="login-card">
+    <div id="phoneSection">
+      <h1 class="login-title">Xush kelibsiz 👋</h1>
+      <p class="login-sub">Kursga kirish uchun telefon raqamingizni kiriting. Telegram botimiz sizga tasdiqlash kodi yuboradi.</p>
+
+      <div class="form-group">
+        <label class="form-label">Telefon raqam</label>
+        <input type="tel" class="form-input" id="phoneInput" placeholder="+998 90 123 45 67">
+      </div>
+
+      <button class="btn btn-primary" id="sendOtpBtn" onclick="sendOtp()">
+        Kod yuborish
+      </button>
+
+      <div class="message" id="phoneMessage"></div>
+    </div>
+
+    <div class="otp-section" id="otpSection">
+      <h1 class="login-title">Kodni kiriting 🔐</h1>
+      <p class="login-sub" id="otpSubText">Telegram botingizga 6 xonali kod yuborildi.</p>
+
+      <div class="form-group">
+        <label class="form-label">Tasdiqlash kodi</label>
+        <input type="text" class="form-input" id="otpInput" placeholder="000000" maxlength="6" style="letter-spacing:8px;font-size:24px;text-align:center">
+      </div>
+
+      <button class="btn btn-primary" id="verifyOtpBtn" onclick="verifyOtp()">
+        Kirish
+      </button>
+
+      <div class="message" id="otpMessage"></div>
+
+      <p class="otp-hint">Kod kelmadimi? <span onclick="resendOtp()">Qayta yuborish</span></p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Kursga yozilmadingizmi? <a href="https://t.me/yourtelegram" style="color:var(--accent2)">Bog'lanish</a>
+  </div>
+</div>
+
+<script>
+  let currentPhone = '';
+
+  async function sendOtp() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    const btn = document.getElementById('sendOtpBtn');
+    const msg = document.getElementById('phoneMessage');
+
+    if (!phone) {
+      showMessage('phoneMessage', 'Telefon raqamni kiriting', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>Yuborilmoqda...';
+
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ phone })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        currentPhone = phone;
+        document.getElementById('phoneSection').style.display = 'none';
+        document.getElementById('otpSection').style.display = 'block';
+        document.getElementById('otpSubText').textContent = `${phone} raqamiga Telegram orqali 6 xonali kod yuborildi.`;
+        document.getElementById('otpInput').focus();
+      } else {
+        showMessage('phoneMessage', data.message, 'error');
+      }
+    } catch(e) {
+      showMessage('phoneMessage', 'Server bilan aloqa yo\'q', 'error');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = 'Kod yuborish';
+  }
+
+  async function verifyOtp() {
+    const code = document.getElementById('otpInput').value.trim();
+    const btn = document.getElementById('verifyOtpBtn');
+
+    if (!code || code.length !== 6) {
+      showMessage('otpMessage', '6 xonali kodni to\'liq kiriting', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>Tekshirilmoqda...';
+
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ phone: currentPhone, code })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showMessage('otpMessage', 'Muvaffaqiyatli! Kursga o\'tilmoqda...', 'success');
+        setTimeout(() => {
+          window.location.href = '/course';
+        }, 1500);
+      } else {
+        showMessage('otpMessage', data.message, 'error');
+      }
+    } catch(e) {
+      showMessage('otpMessage', 'Server bilan aloqa yo\'q', 'error');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = 'Kirish';
+  }
+
+  function resendOtp() {
+    document.getElementById('otpSection').style.display = 'none';
+    document.getElementById('phoneSection').style.display = 'block';
+  }
+
+  function showMessage(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'message ' + type;
+  }
+
+  document.getElementById('phoneInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendOtp();
+  });
+
+  document.getElementById('otpInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') verifyOtp();
+  });
+</script>
+
+</body>
+</html>

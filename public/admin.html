@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — BecomeAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#000;--surface:#0a0a0a;--text:#f0f0f0;--muted:rgba(255,255,255,0.4);--border:rgba(255,255,255,0.08);--green:#39FF14;--red:#FF453A;--blue:#0A84FF;--yellow:#FFD60A}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.95)}
+.logo{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;letter-spacing:3px}
+.logo em{color:var(--green);font-style:normal}
+.nav-badge{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);background:rgba(255,69,58,0.1);border:1px solid rgba(255,69,58,0.3);padding:4px 12px}
+.main{max-width:1200px;margin:0 auto;padding:40px 24px}
+.page-title{font-family:'Orbitron',monospace;font-size:24px;font-weight:900;margin-bottom:8px}
+.page-sub{color:var(--muted);font-size:14px;margin-bottom:40px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+.stat{background:var(--surface);border:1px solid var(--border);padding:20px 24px}
+.stat-val{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;margin-bottom:4px}
+.stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+
+/* Add user */
+.section{margin-bottom:40px}
+.section-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.form-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:11px 16px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s}
+.form-input:focus{border-color:rgba(57,255,20,0.4)}
+.form-input::placeholder{color:rgba(255,255,255,0.2)}
+.form-select{background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:11px 16px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none;cursor:pointer}
+.form-select option{background:#111}
+.btn{padding:11px 24px;border:none;cursor:pointer;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all 0.2s}
+.btn-primary{background:var(--green);color:#000}
+.btn-primary:hover{opacity:0.85}
+.btn-danger{background:rgba(255,69,58,0.15);color:var(--red);border:1px solid rgba(255,69,58,0.3)}
+.btn-danger:hover{background:rgba(255,69,58,0.25)}
+.btn-sm{padding:6px 14px;font-size:10px}
+
+/* Table */
+.table-wrap{background:var(--surface);border:1px solid var(--border);overflow:hidden}
+.table-head{display:grid;grid-template-columns:0.5fr 1fr 1fr 1fr 1fr 1fr auto;gap:0;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02)}
+.table-row{display:grid;grid-template-columns:0.5fr 1fr 1fr 1fr 1fr 1fr auto;gap:0;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s}
+.table-row:hover{background:rgba(255,255,255,0.02)}
+.table-row:last-child{border-bottom:none}
+.th,.td{padding:12px 16px;font-size:12px}
+.th{color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-size:10px}
+.td{color:rgba(255,255,255,0.75)}
+
+/* Progress bar */
+.progress-mini{height:4px;background:rgba(255,255,255,0.08);width:100%;margin-top:4px}
+.progress-fill{height:100%;background:var(--green);transition:width 0.3s}
+
+/* Badges */
+.badge{font-size:10px;padding:3px 10px;letter-spacing:1px;text-transform:uppercase;display:inline-block}
+.badge-green{background:rgba(57,255,20,0.1);color:var(--green);border:1px solid rgba(57,255,20,0.2)}
+.badge-blue{background:rgba(10,132,255,0.1);color:var(--blue);border:1px solid rgba(10,132,255,0.2)}
+.badge-yellow{background:rgba(255,214,10,0.1);color:var(--yellow);border:1px solid rgba(255,214,10,0.2)}
+
+/* Alert */
+.alert{padding:12px 16px;font-size:13px;margin-bottom:16px;display:none}
+.alert.show{display:block}
+.alert-success{background:rgba(57,255,20,0.08);border:1px solid rgba(57,255,20,0.2);color:var(--green)}
+.alert-error{background:rgba(255,69,58,0.08);border:1px solid rgba(255,69,58,0.2);color:var(--red)}
+
+/* Search */
+.search-row{display:flex;gap:12px;margin-bottom:16px}
+.search-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:10px 16px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:14px;outline:none}
+.search-input:focus{border-color:rgba(57,255,20,0.3)}
+.search-input::placeholder{color:rgba(255,255,255,0.2)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#0a0a0a;border:1px solid var(--border);padding:32px;width:100%;max-width:480px}
+.modal-title{font-family:'Orbitron',monospace;font-size:16px;margin-bottom:24px}
+.modal-btns{display:flex;gap:12px;margin-top:24px;justify-content:flex-end}
+
+@media(max-width:768px){
+  .form-row{grid-template-columns:1fr}
+  .table-head{display:none}
+  .table-row{grid-template-columns:1fr;padding:12px 0}
+  nav{padding:12px 16px}
+  .main{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">BECOME<em>AI</em></div>
+  <div class="nav-badge">Admin Panel</div>
+</nav>
+
+<div class="main">
+  <div class="page-title">Boshqaruv Paneli</div>
+  <div class="page-sub">Foydalanuvchilarni boshqarish, statistika ko'rish</div>
+
+  <!-- Login -->
+  <div id="loginSection">
+    <div style="max-width:400px;margin:80px auto;text-align:center">
+      <div style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:3px;color:var(--muted);margin-bottom:32px">ADMIN KIRISH</div>
+      <div class="form-group" style="margin-bottom:16px">
+        <input type="password" class="form-input" id="adminKeyInput" placeholder="Admin kalit..." onkeypress="if(event.key==='Enter')adminLogin()">
+      </div>
+      <button class="btn btn-primary" onclick="adminLogin()" style="width:100%">Kirish</button>
+      <div class="alert alert-error" id="loginError" style="margin-top:12px">Noto'g'ri kalit</div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" style="display:none">
+
+    <!-- Stats -->
+    <div class="stats" id="statsGrid">
+      <div class="stat">
+        <div class="stat-val" id="statTotal" style="color:var(--green)">—</div>
+        <div class="stat-label">Jami foydalanuvchi</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statActive" style="color:var(--blue)">—</div>
+        <div class="stat-label">Faol (bugun)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statCompleted" style="color:var(--yellow)">—</div>
+        <div class="stat-label">O'rtacha progress</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="statFinished" style="color:var(--green)">—</div>
+        <div class="stat-label">Kursni tugatdi</div>
+      </div>
+    </div>
+
+    <!-- Foydalanuvchi qo'shish -->
+    <div class="section">
+      <div class="section-title">Yangi foydalanuvchi qo'shish</div>
+      <div class="alert" id="addAlert"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Telefon raqam</label>
+          <input type="tel" class="form-input" id="newPhone" placeholder="+998901234567">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telegram username</label>
+          <input type="text" class="form-input" id="newTelegram" placeholder="@username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kurs</label>
+          <select class="form-select" id="newCourse">
+            <option value="roadmap">AI Roadmap</option>
+            <option value="60kun">60 kunlik kurs</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="addUser()">Qo'shish</button>
+      </div>
+    </div>
+
+    <!-- Foydalanuvchilar jadvali -->
+    <div class="section">
+      <div class="section-title">Foydalanuvchilar</div>
+      <div class="search-row">
+        <input type="text" class="search-input" id="searchInput" placeholder="Telefon yoki telegram bo'yicha qidirish..." oninput="filterUsers()">
+        <button class="btn btn-primary" onclick="loadUsers()" style="white-space:nowrap">Yangilash</button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="th">#</div>
+          <div class="th">Telefon</div>
+          <div class="th">Telegram</div>
+          <div class="th">Kurs</div>
+          <div class="th">Progress</div>
+          <div class="th">Qo'shilgan</div>
+          <div class="th">Amal</div>
+        </div>
+        <div id="usersTable"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- O'chirish modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-title">Foydalanuvchini o'chirish</div>
+    <div style="color:var(--muted);font-size:14px;line-height:1.6">
+      <span id="deletePhone" style="color:var(--red)"></span> raqamli foydalanuvchini o'chirishni tasdiqlaysizmi? Bu amalni qaytarib bo'lmaydi.
+    </div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeDelete()" style="border:1px solid var(--border);color:var(--muted)">Bekor</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">O'chirish</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let adminKey = '';
+let allUsers = [];
+let deleteTarget = '';
+
+async function adminLogin() {
+  const key = document.getElementById('adminKeyInput').value.trim();
+  if (!key) return;
+
+  const res = await fetch('/api/admin/users', {
+    headers: { 'x-admin-key': key }
+  });
+
+  if (res.ok) {
+    adminKey = key;
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadUsers();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+  }
+}
+
+async function loadUsers() {
+  const res = await fetch('/api/admin/users', {
+    headers: { 'x-admin-key': adminKey }
+  });
+  const data = await res.json();
+  allUsers = data.users || [];
+  renderUsers(allUsers);
+  updateStats(allUsers);
+}
+
+function updateStats(users) {
+  document.getElementById('statTotal').textContent = users.length;
+
+  const today = new Date().toISOString().split('T')[0];
+  const active = users.filter(u => u.created_at && u.created_at.startsWith(today)).length;
+  document.getElementById('statActive').textContent = active;
+
+  const avgProgress = users.length
+    ? Math.round(users.reduce((s, u) => {
+        const days = JSON.parse(u.completed_days || '[]').length;
+        return s + (days / 60 * 100);
+      }, 0) / users.length)
+    : 0;
+  document.getElementById('statCompleted').textContent = avgProgress + '%';
+
+  const finished = users.filter(u => {
+    const days = JSON.parse(u.completed_days || '[]').length;
+    return days >= 60;
+  }).length;
+  document.getElementById('statFinished').textContent = finished;
+}
+
+function renderUsers(users) {
+  const table = document.getElementById('usersTable');
+  if (!users.length) {
+    table.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:14px">Foydalanuvchilar topilmadi</div>';
+    return;
+  }
+
+  table.innerHTML = users.map((u, i) => {
+    const days = JSON.parse(u.completed_days || '[]').length;
+    const pct = Math.round(days / 60 * 100);
+    const date = u.created_at ? u.created_at.split('T')[0] : '—';
+
+    const courseBadge = u.course === '60kun'
+      ? `<span class="badge badge-blue">60 kun</span>`
+      : `<span class="badge badge-green">Roadmap</span>`;
+
+    const progressColor = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--yellow)' : 'var(--blue)';
+
+    return `<div class="table-row">
+      <div class="td" style="color:var(--muted)">${i + 1}</div>
+      <div class="td" style="font-family:'Space Grotesk',sans-serif;font-weight:500">${u.phone}</div>
+      <div class="td" style="color:var(--muted)">${u.telegram || '—'}</div>
+      <div class="td">${courseBadge}</div>
+      <div class="td">
+        <div style="font-size:13px;color:${progressColor};margin-bottom:4px">${days}/60 kun (${pct}%)</div>
+        <div class="progress-mini"><div class="progress-fill" style="width:${pct}%;background:${progressColor}"></div></div>
+      </div>
+      <div class="td" style="color:var(--muted)">${date}</div>
+      <div class="td">
+        <button class="btn btn-danger btn-sm" onclick="openDelete('${u.phone}')">O'chirish</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterUsers() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = allUsers.filter(u =>
+    u.phone.toLowerCase().includes(q) ||
+    (u.telegram || '').toLowerCase().includes(q)
+  );
+  renderUsers(filtered);
+}
+
+async function addUser() {
+  const phone = document.getElementById('newPhone').value.trim();
+  const telegram = document.getElementById('newTelegram').value.trim();
+  const course = document.getElementById('newCourse').value;
+  const alert = document.getElementById('addAlert');
+
+  if (!phone) {
+    showAlert(alert, 'Telefon raqam kiritilmadi', 'error');
+    return;
+  }
+
+  const res = await fetch('/api/auth/admin/add-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone, telegram, course, adminKey: adminKey })
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    showAlert(alert, `✓ ${phone} qo'shildi`, 'success');
+    document.getElementById('newPhone').value = '';
+    document.getElementById('newTelegram').value = '';
+    loadUsers();
+  } else {
+    showAlert(alert, `✗ ${data.message}`, 'error');
+  }
+}
+
+function showAlert(el, msg, type) {
+  el.textContent = msg;
+  el.className = `alert alert-${type} show`;
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function openDelete(phone) {
+  deleteTarget = phone;
+  document.getElementById('deletePhone').textContent = phone;
+  document.getElementById('deleteModal').classList.add('open');
+}
+
+function closeDelete() {
+  document.getElementById('deleteModal').classList.remove('open');
+  deleteTarget = '';
+}
+
+async function confirmDelete() {
+  const res = await fetch('/api/admin/delete-user', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ phone: deleteTarget, adminKey: adminKey })
+  });
+  const data = await res.json();
+  closeDelete();
+  if (data.success) loadUsers();
+}
+
+document.getElementById('adminKeyInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') adminLogin();
+});
+</script>
+</body>
+</html>
