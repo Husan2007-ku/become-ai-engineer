@@ -101,22 +101,19 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:16px 3
   <div class="page-title">Boshqaruv Paneli</div>
   <div class="page-sub">Foydalanuvchilarni boshqarish, statistika ko'rish</div>
 
-  <!-- Login -->
   <div id="loginSection">
     <div style="max-width:400px;margin:80px auto;text-align:center">
       <div style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:3px;color:var(--muted);margin-bottom:32px">ADMIN KIRISH</div>
       <div class="form-group" style="margin-bottom:16px">
-        <input type="password" class="form-input" id="adminKeyInput" placeholder="Admin kalit..." onkeypress="if(event.key==='Enter')adminLogin()">
+        <input type="password" class="form-input" id="adminKeyInput" placeholder="Admin kalit...">
       </div>
       <button class="btn btn-primary" onclick="adminLogin()" style="width:100%">Kirish</button>
       <div class="alert alert-error" id="loginError" style="margin-top:12px">Noto'g'ri kalit</div>
     </div>
   </div>
 
-  <!-- Dashboard -->
   <div id="dashboard" style="display:none">
 
-    <!-- Stats -->
     <div class="stats" id="statsGrid">
       <div class="stat">
         <div class="stat-val" id="statTotal" style="color:var(--green)">—</div>
@@ -136,7 +133,6 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:16px 3
       </div>
     </div>
 
-    <!-- Foydalanuvchi qo'shish -->
     <div class="section">
       <div class="section-title">Yangi foydalanuvchi qo'shish</div>
       <div class="alert" id="addAlert"></div>
@@ -160,7 +156,6 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:16px 3
       </div>
     </div>
 
-    <!-- Foydalanuvchilar jadvali -->
     <div class="section">
       <div class="section-title">Foydalanuvchilar</div>
       <div class="search-row">
@@ -184,7 +179,6 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:16px 3
   </div>
 </div>
 
-<!-- O'chirish modal -->
 <div class="modal-overlay" id="deleteModal">
   <div class="modal">
     <div class="modal-title">Foydalanuvchini o'chirish</div>
@@ -203,52 +197,77 @@ let adminKey = '';
 let allUsers = [];
 let deleteTarget = '';
 
+// Safe JSON parser helper
+function getDaysCount(completedDaysRaw) {
+  if (!completedDaysRaw) return 0;
+  if (Array.isArray(completedDaysRaw)) return completedDaysRaw.length;
+  try {
+    const parsed = JSON.parse(completedDaysRaw);
+    return Array.isArray(parsed) ? parsed.length : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
 async function adminLogin() {
   const key = document.getElementById('adminKeyInput').value.trim();
   if (!key) return;
 
-  const res = await fetch('/api/admin/users', {
-    headers: { 'x-admin-key': key }
-  });
+  try {
+    const res = await fetch('/api/admin/users', {
+      headers: { 'x-admin-key': key }
+    });
 
-  if (res.ok) {
-    adminKey = key;
-    document.getElementById('loginSection').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadUsers();
-  } else {
-    document.getElementById('loginError').classList.add('show');
+    if (res.ok) {
+      adminKey = key;
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadUsers();
+    } else {
+      document.getElementById('loginError').classList.add('show');
+    }
+  } catch(err) {
+    console.error(err);
+    alert("Server bilan bog'lanishda xatolik!");
   }
 }
 
 async function loadUsers() {
-  const res = await fetch('/api/admin/users', {
-    headers: { 'x-admin-key': adminKey }
-  });
-  const data = await res.json();
-  allUsers = data.users || [];
-  renderUsers(allUsers);
-  updateStats(allUsers);
+  try {
+    const res = await fetch('/api/admin/users', {
+      headers: { 'x-admin-key': adminKey }
+    });
+    const data = await res.json();
+    allUsers = data.users || [];
+    renderUsers(allUsers);
+    updateStats(allUsers);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 function updateStats(users) {
   document.getElementById('statTotal').textContent = users.length;
 
   const today = new Date().toISOString().split('T')[0];
-  const active = users.filter(u => u.created_at && u.created_at.startsWith(today)).length;
-  document.getElementById('statActive').textContent = active;
+  const active = users.filter(u => {
+    const activeDate = u.updated_at || u.created_at;
+    return activeDate && activeDate.startsWith(today);
+  }).length;
+  document.getElementById('statActive').textContent = active || users.length;
 
   const avgProgress = users.length
     ? Math.round(users.reduce((s, u) => {
-        const days = JSON.parse(u.completed_days || '[]').length;
-        return s + (days / 60 * 100);
+        const days = getDaysCount(u.completed_days);
+        const progressVal = u.progress !== undefined && u.progress !== null ? parseFloat(u.progress) : (days / 60 * 100);
+        return s + progressVal;
       }, 0) / users.length)
     : 0;
   document.getElementById('statCompleted').textContent = avgProgress + '%';
 
   const finished = users.filter(u => {
-    const days = JSON.parse(u.completed_days || '[]').length;
-    return days >= 60;
+    const days = getDaysCount(u.completed_days);
+    return u.progress == 100 || days >= 60;
   }).length;
   document.getElementById('statFinished').textContent = finished;
 }
@@ -261,8 +280,8 @@ function renderUsers(users) {
   }
 
   table.innerHTML = users.map((u, i) => {
-    const days = JSON.parse(u.completed_days || '[]').length;
-    const pct = Math.round(days / 60 * 100);
+    const days = getDaysCount(u.completed_days);
+    const pct = u.progress !== undefined && u.progress !== null ? Math.round(u.progress) : Math.round(days / 60 * 100);
     const date = u.created_at ? u.created_at.split('T')[0] : '—';
 
     const courseBadge = u.course === '60kun'
@@ -273,11 +292,11 @@ function renderUsers(users) {
 
     return `<div class="table-row">
       <div class="td" style="color:var(--muted)">${i + 1}</div>
-      <div class="td" style="font-family:'Space Grotesk',sans-serif;font-weight:500">${u.phone}</div>
+      <div class="td" style="font-family:'Space Grotesk',sans-serif;font-weight:500">${u.phone || '—'}</div>
       <div class="td" style="color:var(--muted)">${u.telegram || '—'}</div>
       <div class="td">${courseBadge}</div>
       <div class="td">
-        <div style="font-size:13px;color:${progressColor};margin-bottom:4px">${days}/60 kun (${pct}%)</div>
+        <div style="font-size:13px;color:${progressColor};margin-bottom:4px">${u.progress !== undefined ? pct : days + '/60 kun'} (${pct}%)</div>
         <div class="progress-mini"><div class="progress-fill" style="width:${pct}%;background:${progressColor}"></div></div>
       </div>
       <div class="td" style="color:var(--muted)">${date}</div>
@@ -291,7 +310,7 @@ function renderUsers(users) {
 function filterUsers() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const filtered = allUsers.filter(u =>
-    u.phone.toLowerCase().includes(q) ||
+    (u.phone || '').toLowerCase().includes(q) ||
     (u.telegram || '').toLowerCase().includes(q)
   );
   renderUsers(filtered);
@@ -308,20 +327,24 @@ async function addUser() {
     return;
   }
 
-  const res = await fetch('/api/auth/admin/add-user', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone, telegram, course, adminKey: adminKey })
-  });
-  const data = await res.json();
+  try {
+    const res = await fetch('/api/auth/admin/add-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, telegram, course, adminKey: adminKey })
+    });
+    const data = await res.json();
 
-  if (data.success) {
-    showAlert(alert, `✓ ${phone} qo'shildi`, 'success');
-    document.getElementById('newPhone').value = '';
-    document.getElementById('newTelegram').value = '';
-    loadUsers();
-  } else {
-    showAlert(alert, `✗ ${data.message}`, 'error');
+    if (data.success) {
+      showAlert(alert, `✓ ${phone} qo'shildi`, 'success');
+      document.getElementById('newPhone').value = '';
+      document.getElementById('newTelegram').value = '';
+      loadUsers();
+    } else {
+      showAlert(alert, `✗ ${data.message || data.error}`, 'error');
+    }
+  } catch (err) {
+    showAlert(alert, `✗ Server xatolik`, 'error');
   }
 }
 
@@ -343,14 +366,23 @@ function closeDelete() {
 }
 
 async function confirmDelete() {
-  const res = await fetch('/api/admin/delete-user', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone: deleteTarget, adminKey: adminKey })
-  });
-  const data = await res.json();
-  closeDelete();
-  if (data.success) loadUsers();
+  try {
+    const res = await fetch('/api/admin/delete-user', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: deleteTarget, adminKey: adminKey })
+    });
+    const data = await res.json();
+    closeDelete();
+    if (data.success) {
+      loadUsers();
+    } else {
+      alert("Xatolik: " + data.message);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("O'chirishda server xatosi!");
+  }
 }
 
 document.getElementById('adminKeyInput').addEventListener('keypress', e => {
