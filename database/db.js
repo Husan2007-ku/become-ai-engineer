@@ -42,10 +42,24 @@ const initDb = async () => {
   }
 };
 
-// Server yonganda jadvallarni tekshirib olish uchun chaqiramiz
+// Server yonganda jadvallarni tekshirib olish uchun chaqirdim
 initDb();
 
 module.exports = {
-  // SQLite dagi db.prepare().run() yoki .all() larni o'rniga db.query() ishlatamiz
+  // SQLite dagi db.prepare().run() yoki .all() larni o'rniga db.query() ishlatdim
   query: (text, params) => pool.query(text, params),
 };
+// O'zimni bazaga qo'shish uchun vaqtinchalik kod
+const addAdminUser = async () => {
+  try {
+    await pool.query(
+      "INSERT INTO users (phone, telegram, course) VALUES ($1, $2, $3) ON CONFLICT (phone) DO NOTHING",
+      ["+998946041477", "@yourtelegram", "60kun"]
+    );
+    console.log("🔥 ADMIN RAQAMI BAZAGA QO'SHILDI! 🔥");
+  } catch (err) {
+    console.error("Admin qo'shishda xato:", err.message);
+  }
+};
+// Jadvallar tekshirilgandan keyin ishlashi uchun vaqt beryapmiz
+setTimeout(addAdminUser, 5000);
