@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+process.env.ADMIN_KEY = "husanai2025secret";
 
 // 2. Neon PostgreSQL ulanishi va Route fayllar
 const db = require('./database/db'); 
