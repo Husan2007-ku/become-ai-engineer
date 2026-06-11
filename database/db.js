@@ -1,12 +1,25 @@
 const { Pool } = require('pg');
 
-// Neon havolasini to'g'ridan-to'g'ri kodning ichiga yozamiz (Faqat sinov uchun)
+// Havolani xatosiz va toza ulanishi uchun pool sozlamasi
 const pool = new Pool({
-  connectionString: "postgresql://neondb_owner:npg_fiHU8YMh0dcn@ep-weathered-morning-as517c9c.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require", // <-- 
+  connectionString: "postgresql://neondb_owner:npg_fiHU8YMh0dcn@ep-weathered-morning-as517c9c.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require",
   ssl: {
     rejectUnauthorized: false
   }
 });
+
+// Ma'lumotlar bazasiga ulanishni tekshirish
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Baza bilan ulanishda xato yuz berdi:', err.stack);
+  }
+  console.log('PostgreSQL bazasiga muvaffaqiyatli ulandi! 🚀');
+  release();
+});
+
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+};
 
 // Jadvallarni PostgreSQL formatida yaratish
 const initDb = async () => {
