@@ -1,8 +1,33 @@
+// 1. Kutubxonalarni yuklash (Hamma narsadan tepada turishi shart)
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
+
+// 2. Neon PostgreSQL ulanishi va Route fayllar
+const db = require('./database/db'); 
+const authRoutes = require('./routes/auth');
+
+// 3. Telegram botni ishga tushirish
+require('./bot');
+
+// 4. Express loyihasini yaratish (Mana shu qator pastdagilardan tepada turishi shart edi!)
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// 5. Middleware-lar
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 6. Auth marshrutlari
+app.use('/api/auth', authRoutes);
+
 // =======================================================
 //   ADMIN PANEL UCHUN REAL-TIME API-LAR (POSTGRESQL NEON)
 // =======================================================
 
-// Bazadagi haqiqiy jadval nomini aniqlash funksiyasi
+// Bazadagi haqiqiy jadval nomini avtomatik aniqlash funksiyasi
 async function getTableName() {
   try {
     // Avval 'users' jadvali bormi tekshiradi
@@ -13,8 +38,7 @@ async function getTableName() {
     const checkAllowed = await db.query(`SELECT to_regclass('public.allowed_users') as tbl`);
     if (checkAllowed.rows[0].tbl) return 'allowed_users';
 
-    // Agar ikkalasi ham bo'lmasa, standart holatda 'users' qaytaradi
-    return 'users';
+    return 'users'; // Ikkalasi ham bo'lmasa standart 'users'
   } catch (e) {
     return 'users';
   }
@@ -25,11 +49,11 @@ app.get('/api/admin/users', async (req, res) => {
   const adminKey = req.headers['x-admin-key'];
 
   if (!adminKey || adminKey !== process.env.ADMIN_KEY) {
-    return res.status(403).json({ error: "Tizimga kirish taqiqlangan!" });
+    return res.status(403).json({ error: "Tizimga kirish taqiqlangan! Parol noto'g'ri." });
   }
 
   try {
-    const table = await getTableName(); // Haqiqiy jadval nomini olamiz
+    const table = await getTableName();
     const result = await db.query(`SELECT * FROM ${table} ORDER BY id DESC`);
     res.json({ users: result.rows });
   } catch (err) {
@@ -38,7 +62,7 @@ app.get('/api/admin/users', async (req, res) => {
   }
 });
 
-// 2. Yangi Foydalanuvchi Qo'shish
+// 2. Yangi Foydalanuvchi Qo'shish (Admin panel ichidagi forma uchun)
 app.post('/api/auth/admin/add-user', async (req, res) => {
   const { phone, telegram, course, adminKey } = req.body;
 
@@ -47,25 +71,23 @@ app.post('/api/auth/admin/add-user', async (req, res) => {
   }
 
   if (!phone) {
-    return res.status(400).json({ success: false, message: "Telefon raqam shart!" });
+    return res.status(400).json({ success: false, message: "Telefon raqam kiritilishi shart!" });
   }
 
   try {
     const table = await getTableName();
 
-    // Avval tekshiramiz
     const checkUser = await db.query(`SELECT * FROM ${table} WHERE phone = $1`, [phone]);
     if (checkUser.rows.length > 0) {
-      return res.status(400).json({ success: false, message: "Bu raqam allaqachon bor!" });
+      return res.status(400).json({ success: false, message: "Bu raqam allaqachon ro'yxatga qo'shilgan!" });
     }
 
-    // Bazaga qo'shish (ustunlar nomini moslashtirish bilan)
     await db.query(
       `INSERT INTO ${table} (phone, telegram, course, completed_days, created_at) VALUES ($1, $2, $3, $4, NOW())`,
       [phone, telegram || null, course || '60kun', '[]']
     );
 
-    res.json({ success: true, message: "Foydalanuvchi qo'shildi!" });
+    res.json({ success: true, message: "Foydalanuvchi muvaffaqiyatli qo'shildi!" });
   } catch (err) {
     console.error("Admin user qo'shish xatolik:", err);
     res.status(500).json({ success: false, message: "Server bazasiga yozishda xatolik." });
@@ -96,3 +118,21 @@ app.delete('/api/admin/delete-user', async (req, res) => {
 });
 
 // =======================================================
+
+// 7. Sahifa (Page) marshrutlari
+app.get('/course', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'course.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// 8. Serverni tinglash
+app.listen(PORT, () => {
+  console.log(`Server ishlamoqda: http://localhost:${PORT}`);
+});
