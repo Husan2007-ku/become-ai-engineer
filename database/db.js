@@ -1,10 +1,10 @@
 const { Pool } = require('pg');
 
-// Render yoki localhost .env ichidagi DATABASE_URL ni o'qiydi
+// Neon havolasini to'g'ridan-to'g'ri kodning ichiga yozamiz (Faqat sinov uchun)
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgresql://neondb_owner:npg_fiHU8YMh0dcn@ep-weathered-morning-as517c9c.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require", // <-- 
   ssl: {
-    rejectUnauthorized: false // Tashqi serverga xavfsiz ulanish uchun shart
+    rejectUnauthorized: false
   }
 });
 
