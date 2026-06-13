@@ -31,6 +31,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .nav-cta{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 24px;background:var(--green);color:#000;text-decoration:none;transition:opacity 0.2s}
 .nav-cta:hover{opacity:0.85}
 
+/* FIX: Fixed Navbar ostiga kontent kirib ketmasligi uchun */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(57,255,20,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
@@ -65,6 +70,9 @@ section{padding:100px 24px}
 .whom-card{background:var(--bg);padding:32px;transition:background 0.2s}
 .whom-card:hover{background:#0d0d0d}
 .whom-icon{font-size:32px;margin-bottom:16px}
+.whom-card{background:var(--bg);padding:32px;transition:background 0.2s}
+.whom-card:hover{background:#0d0d0d}
+.whom-icon{font-size:32px;margin-bottom:16px}
 .whom-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text)}
 .whom-desc{font-size:14px;color:var(--muted);line-height:1.6}
 
@@ -82,7 +90,7 @@ section{padding:100px 24px}
 .step-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .step-card.right .step-tags{justify-content:flex-end}
 .step-tag{font-size:10px;padding:3px 8px;background:rgba(57,255,20,0.08);color:var(--green);border:1px solid rgba(57,255,20,0.15)}
-.step-dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin:0 auto;z-index:2}
+.step-dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin:0 auto}
 .step-empty{background:transparent;border:none}
 
 /* WHAT YOU GET */
@@ -96,13 +104,13 @@ section{padding:100px 24px}
 
 /* PRICING */
 .pricing{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,400px));justify-content:center;gap:24px;margin-top:48px}
-.plan{border:1px solid var(--border);padding:36px;position:relative;background:var(--bg)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:48px}
+.plan{border:1px solid var(--border);padding:36px;position:relative}
 .plan.featured{border-color:var(--green)}
 .plan-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;font-family:'Orbitron',monospace;font-size:9px;font-weight:900;letter-spacing:2px;padding:4px 16px;white-space:nowrap}
 .plan-name{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:16px;text-transform:uppercase}
-.plan-price{font-family:'Orbitron',monospace;font-size:40px;font-weight:900;margin-bottom:4px}
-.plan-price span{font-size:18px;font-weight:400;color:var(--muted)}
+.plan-price{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;margin-bottom:4px}
+.plan-price span{font-size:14px;font-weight:400;color:var(--muted)}
 .plan-period{font-size:13px;color:var(--muted);margin-bottom:28px}
 .plan-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
 .plan-features li{font-size:14px;color:var(--muted);display:flex;align-items:flex-start;gap:10px}
@@ -116,13 +124,13 @@ section{padding:100px 24px}
 .plan-btn.secondary:hover{border-color:rgba(255,255,255,0.3)}
 
 /* FAQ */
-.faq-list{margin-top:48px;display:flex;flex-direction:column;gap:8px}
-.faq-item{border:1px solid var(--border);overflow:hidden;background:var(--bg)}
+.faq-list{margin-top:48px;display:flex;flex-direction:column;gap:2px}
+.faq-item{border:1px solid var(--border);overflow:hidden}
 .faq-q{padding:20px 24px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:15px;font-weight:500;transition:background 0.2s}
 .faq-q:hover{background:rgba(255,255,255,0.02)}
-.faq-icon{color:var(--green);font-size:20px;flex-shrink:0;transition:transform 0.3s;font-family: monospace;}
-.faq-a{max-height:0;overflow:hidden;padding:0 24px;font-size:14px;color:var(--muted);line-height:1.8;transition:max-height 0.3s ease, padding 0.3s ease}
-.faq-item.open .faq-a{max-height:200px;padding:0 24px 20px;border-top:1px solid var(--border)}
+.faq-icon{color:var(--green);font-size:20px;flex-shrink:0;transition:transform 0.3s}
+.faq-a{display:none;padding:0 24px 20px;font-size:14px;color:var(--muted);line-height:1.8;border-top:1px solid var(--border)}
+.faq-item.open .faq-a{display:block}
 .faq-item.open .faq-icon{transform:rotate(45deg)}
 
 /* CTA */
@@ -137,22 +145,16 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
 .footer-logo em{color:var(--green);font-style:normal}
 .footer-text{font-size:13px;color:var(--muted)}
 
-/* MOBILE RESPONSIVENESS */
+/* MOBILE */
 @media(max-width:768px){
   nav{padding:14px 20px}
   .nav-links{display:none}
-  .hero{padding:120px 20px 60px}
-  .hero-stats{gap:24px;flex-wrap:wrap;display:grid;grid-template-columns:1fr 1fr}
+  .hero{padding:100px 20px 60px}
+  .hero-stats{gap:24px;flex-wrap:wrap}
   section{padding:64px 20px}
-  
-  /* Mobile Roadmap Optimization */
-  .roadmap-line{left:20px;transform:none}
-  .roadmap-step{grid-template-columns:20px 1fr;gap:16px;padding:12px 0}
-  .roadmap-step .step-empty{display:none}
-  .step-dot{margin:0;left:14px;position:relative}
-  .step-card.right{text-align:left}
-  .step-card.right .step-tags{justify-content:flex-start}
-  .step-card{padding:16px}
+  .roadmap-step{grid-template-columns:1fr 24px 1fr;gap:12px}
+  .step-card{padding:14px 16px}
+  .roadmap-line{left:50%}
 }
 </style>
 </head>
@@ -180,7 +182,8 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
       <span class="green">bo'l.</span>
       <span class="dim">Hozir.</span>
     </h1>
-    <p class="hero-desc">Sun'iy intellekt muhandisi — zamonamizning eng istiqbolli kasbi. Bizning interaktiv yo'l xaritamiz orqali noldan professional darajaga chiqing.</p>
+    <!-- FIX: Yil 2026 ga yangilandi -->
+    <p class="hero-desc">Sun'iy intellekt muhandisi — 2026 yilning eng istiqbolli kasbi. Bizning yo'l xaritamiz orqali noldan professional darajaga chiqing.</p>
     <div class="hero-btns">
       <a href="/login" class="btn-primary">Hoziroq boshlash →</a>
       <a href="#roadmap" class="btn-secondary">Yo'l xaritasi</a>
@@ -192,7 +195,7 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
       </div>
       <div>
         <div class="hero-stat-num">0$</div>
-        <div class="hero-stat-label">Yashirin To'lov</div>
+        <div class="hero-stat-label">Qo'shimcha kurs</div>
       </div>
       <div>
         <div class="hero-stat-num">O'zbek</div>
@@ -216,22 +219,22 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
       <div class="whom-card">
         <div class="whom-icon">🎓</div>
         <div class="whom-title">Talabalar</div>
-        <div class="whom-desc">Universitetda o'qiyapsiz lekin real ko'nikma kerak. AI Engineer portfoliosi — muvaffaqiyat kalitidir.</div>
+        <div class="whom-desc">Universitetda o'qiyapsiz lekin real ko'nikma kerak. AI Engineer sertifikati — ish topishda asosiy qurol.</div>
       </div>
       <div class="whom-card">
         <div class="whom-icon">💼</div>
         <div class="whom-title">Ishlayotganlar</div>
-        <div class="whom-desc">Hozirgi ishingizga AI qo'shing yoki yangi sohaga o'ting. AI ko'nikmalar maoshni sezilarli darajada oshiradi.</div>
+        <div class="whom-desc">Hozirgi ishingizga AI qo'shing yoki yangi sohaga o'ting. AI ko'nikmalar maoshni 2-3x oshiradi.</div>
       </div>
       <div class="whom-card">
         <div class="whom-icon">🚀</div>
         <div class="whom-title">Tadbirkorlar</div>
-        <div class="whom-desc">Biznesingizga AI agentlar qo'shing. Mijozlar uchun aqlli yechimlar yarating va raqobatchilardan o'zing.</div>
+        <div class="whom-desc">Biznesingizga AI qo'shing. Mijozlar uchun AI yechimlar yarating. Raqobatchilardan oldinda bo'ling.</div>
       </div>
       <div class="whom-card">
         <div class="whom-icon">💻</div>
         <div class="whom-title">Dasturchilar</div>
-        <div class="whom-desc">Backend yoki Fullstack dasturchisiz. LLM va RAG ekotizimini o'rganib, Senior darajasiga chiqing.</div>
+        <div class="whom-desc">Backend, frontend yoki fullstack developer siz. AI ko'nikmalar qo'shib, Senior AI Engineer bo'ling.</div>
       </div>
     </div>
   </div>
@@ -241,8 +244,8 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
 <section class="roadmap-preview" id="roadmap">
   <div class="container">
     <div class="section-label">Yo'l xaritasi</div>
-    <div class="section-title">Noldan Professionalgacha</div>
-    <div class="section-desc">Har mavzu bir-biriga mukammal bog'liq. Tartib bilan o'rganing — natija kafolatli.</div>
+    <div class="section-title">Noldan Professional gacha</div>
+    <div class="section-desc">Har mavzu bir-biriga bog'liq. Tartib bilan o'rganing — natija kafolatli.</div>
     <div class="roadmap-visual">
       <div class="roadmap-line"></div>
       <div class="roadmap-steps">
@@ -320,43 +323,43 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
   <div class="container">
     <div class="section-label">Nima olasiz?</div>
     <div class="section-title">Bir joyda — hamma narsa</div>
-    <div class="section-desc">Zerikarli video darsliklar emas. Real chuqur bilim, production kodlar va amaliy natija.</div>
+    <div class="section-desc">Video darslik emas. Real bilim, real amaliyot, real natija.</div>
     <div class="features-grid">
       <div class="feature">
         <div class="feature-accent" style="background:var(--green)"></div>
         <div class="feature-icon">🗺️</div>
         <div class="feature-title">To'liq yo'l xaritasi</div>
-        <div class="feature-desc">100+ o'zbekcha tartibli mavzu. Har bir dars mukammal tushuntirish va amaliy misollar bilan boyitilgan.</div>
+        <div class="feature-desc">100+ mavzu, tartibli, o'zbekcha. Har mavzu — chuqur tushuntirish, misollar, resurslar.</div>
       </div>
       <div class="feature">
         <div class="feature-accent" style="background:var(--blue)"></div>
         <div class="feature-icon">💻</div>
         <div class="feature-title">Amaliy kodlar</div>
-        <div class="feature-desc">Har mavzuda real ishlaydigan tayyor kod namunasi. Shunchaki nusxa ko'chirmang — arxitekturani tushuning.</div>
+        <div class="feature-desc">Har mavzuda ishlaydigan kod misollari. Copy-paste emas — tushunib yozing.</div>
       </div>
       <div class="feature">
         <div class="feature-accent" style="background:var(--purple)"></div>
         <div class="feature-icon">🎤</div>
         <div class="feature-title">Interview savollar</div>
-        <div class="feature-desc">Kompaniyalar intervyuda so'raydigan eng dolzarb texnik savollar va ularning to'liq, professional javoblari.</div>
+        <div class="feature-desc">Har mavzuda real intervyu savollari va mukammal javoblar. Kompaniyalar shu narsalarni so'raydi.</div>
       </div>
       <div class="feature">
         <div class="feature-accent" style="background:#FF9F0A"></div>
         <div class="feature-icon">🔗</div>
         <div class="feature-title">Eng yaxshi manbalar</div>
-        <div class="feature-desc">Rasmiy hujjatlar, xalqaro maqolalar va eng sara GitHub omborxonalariga saralangan to'g'ridan-to'g'ri havolalar.</div>
+        <div class="feature-desc">YouTube, dokumentatsiya, maqolalar — barchasi saralangan va to'g'ridan havola.</div>
       </div>
       <div class="feature">
         <div class="feature-accent" style="background:#FF375F"></div>
         <div class="feature-icon">📱</div>
-        <div class="feature-title">Cross-platforma</div>
-        <div class="feature-desc">Istalgan qurilmadan qulay foydalaning. Metroda, kafeda yoki ish joyingizda — ta'lim doimo siz bilan.</div>
+        <div class="feature-title">Telefon va kompyuter</div>
+        <div class="feature-desc">Istalgan qurilmadan kiring. Metro da, uyda, ishda — har joyda o'qing.</div>
       </div>
       <div class="feature">
         <div class="feature-accent" style="background:#00E5C3"></div>
         <div class="feature-icon">⚡</div>
         <div class="feature-title">Doimiy yangilanish</div>
-        <div class="feature-desc">AI olami soniyalarda o'zgaradi. Bir marta xarid qiling va yangi qo'shilgan barcha mavzulardan mutloq bepul foydalaning.</div>
+        <div class="feature-desc">AI soha tez o'zgaradi. Biz ham yangilab boramiz. Bir marta to'lab, doim yangi bilim.</div>
       </div>
     </div>
   </div>
@@ -367,36 +370,38 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
   <div class="container">
     <div class="section-label">Narxlar</div>
     <div class="section-title">Sodda va shaffof</div>
-    <div class="section-desc">Hech qanday oylik obuna yoki yashirin to'lovlar yo'q. Bir marta to'lang — bir umr foydalaning.</div>
+    <div class="section-desc">Yashirin to'lovlar yo'q. Bir marta to'lang — cheksiz kirish.</div>
     <div class="pricing-grid">
       <div class="plan">
         <div class="plan-name">Asosiy</div>
-        <div class="plan-price">$49 <span>/ bir martalik</span></div>
-        <div class="plan-period">Umrbod kirish huquqi</div>
+        <!-- FIX: Valyuta formati o'zbek bozoriga moslandi -->
+        <div class="plan-price">590,000 UZS <span>/ bir martalik</span></div>
+        <div class="plan-period">Cheksiz kirish</div>
         <ul class="plan-features">
-          <li>To'liq interaktiv yo'l xaritasi</li>
-          <li>100+ chuqur o'zbekcha mavzu</li>
-          <li>Amaliy production kodlar</li>
-          <li>Texnik intervyu savollari</li>
-          <li>Saralangan resurslar bazasi</li>
+          <li>To'liq yo'l xaritasi</li>
+          <li>100+ mavzu, o'zbekcha</li>
+          <li>Kod misollari</li>
+          <li>Interview savollar</li>
+          <li>Resurslar to'plami</li>
           <li class="no">Shaxsiy mentoring</li>
-          <li class="no">Yopiq guruh chati</li>
+          <li class="no">Guruh chati</li>
         </ul>
         <a href="/login" class="plan-btn secondary">Boshlash →</a>
       </div>
       <div class="plan featured">
         <div class="plan-badge">ENG KO'P TANLANGAN</div>
         <div class="plan-name">Premium</div>
-        <div class="plan-price">$99 <span>/ bir martalik</span></div>
-        <div class="plan-period">Cheksiz kirish + Jamiyat</div>
+        <!-- FIX: Valyuta formati o'zbek bozoriga moslandi -->
+        <div class="plan-price">1,190,000 UZS <span>/ bir martalik</span></div>
+        <div class="plan-period">Cheksiz kirish + bonuslar</div>
         <ul class="plan-features">
-          <li>To'liq interaktiv yo'l xaritasi</li>
-          <li>100+ chuqur o'zbekcha mavzu</li>
-          <li>Amaliy production kodlar</li>
-          <li>Texnik intervyu savollari</li>
-          <li>Saralangan resurslar bazasi</li>
-          <li>Yopiq Telegram Premium hamjamiyat</li>
-          <li>Har oylik jonli yopiq Q&A sessiyalar</li>
+          <li>To'liq yo'l xaritasi</li>
+          <li>100+ mavzu, o'zbekcha</li>
+          <li>Kod misollari</li>
+          <li>Interview savollar</li>
+          <li>Resurslar to'plami</li>
+          <li>Telegram guruh</li>
+          <li>Oylik Q&A session</li>
         </ul>
         <a href="/login" class="plan-btn primary">Hoziroq boshlash →</a>
       </div>
@@ -411,46 +416,46 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
     <div class="section-title">Ko'p so'raladigan savollar</div>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q">
+        <div class="faq-q" onclick="toggleFaq(this)">
           Dasturlash bilmasa ham bo'ladimi?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Albatta! Yo'l xaritamiz eng fundamental dasturlash asoslaridan boshlanadi. Tizimli o'rganish va ishtiyoq bo'lsa kifoya — sizni bosqichma-bosqich Senior darajagacha olib boramiz.</div>
+        <div class="faq-a">Ha! Yo'l xaritamiz Python asoslaridan boshlanadi. Siz noldan boshlasangiz ham, qadam-ba-qadam o'rganasiz. Asosiy shart — o'rganishga ishtiyoq.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Kursni tugatish uchun qancha vaqt kerak?
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Qancha vaqt kerak?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Agar kuniga o'rtacha 2-3 soat vaqt ajratsangiz, 3-4 oy ichida asosiy ishlab chiqarish (production) darajasiga erishasiz. Ammo tizim bir umrlik bo'lgani uchun o'zingizga qulay tezlikda o'rganishingiz mumkin.</div>
+        <div class="faq-a">Har kuni 2-3 soat ajratsangiz, 3-4 oyda asosiy mavzularni o'rganib bo'lasiz. Lekin bu individual — siz o'z sur'atingizda boring.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Kursda video darsliklar bormi?
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Video darslik bormi?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Yo'q, platformamiz professional muhandislar uslubida qurilgan. Haqiqiy muhandislar video ko'rmaydi, hujjat (documentation) o'qiydi. Biz eng chuqur matnli darslar, interaktiv kodlar va eng sara xalqaro video manbalarga havolalar beramiz.</div>
+        <div class="faq-a">Yo'q. Lekin har mavzuda eng yaxshi YouTube videolariga to'g'ridan havola bor. Biz matn va kodga e'tibor qaratamiz — chunki professional dasturchilar hujjat o'qiydi, video ko'rmaydi.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          To'lovdan keyin kirish muddati cheklanganmi?
+        <div class="faq-q" onclick="toggleFaq(this)">
+          To'lovdan keyin qancha vaqt kirish bo'ladi?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Yo'q, kirish mutloq umrbod hisoblanadi. Kelajakda platformaga yangi darslar, frameworklar va AI agent arxitekturalari qo'shilsa ham sizdan qayta to'lov talab qilinmaydi.</div>
+        <div class="faq-a">Bir marta to'lab, umrbod kirish. Yangi mavzular qo'shilganda ham siz uchun bepul.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Darslar to'liq o'zbek tilidami?
+        <div class="faq-q" onclick="toggleFaq(this)">
+          O'zbekcha ekanmi?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Ha, platformadagi barcha darslar o'zbek tilida tushuntirilgan. Faqat xalqaro standart hisoblangan global texnik atamalar (masalan: Embedding, Fine-tuning, RAG) o'z holaticha qoldirilgan va batafsil izohlangan.</div>
+        <div class="faq-a">Ha, to'liq o'zbekcha. Bu O'zbekistondagi birinchi chuqur AI yo'l xaritasi. Texnik atamalar inglizcha qoladi — chunki ular global standart.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">
-          Sertifikat beriladimi va u ish topishga yordam beradimi?
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Ish topishga yordam beradimi?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Yo'l xaritasini muvaffaqiyatli yakunlagach, raqamli sertifikat taqdim etiladi. Biz sizga tayyor ish va'da qilmaymiz, lekin darslar tarkibidagi real intervyu savol-javoblari va portfoliongizdagi loyihalar har qanday top kompaniya eshigini ochishga yordam beradi.</div>
+        <div class="faq-a">To'g'ridan ish topib bermaymiz. Lekin har mavzuda real intervyu savollar va javoblar bor. Bu bilimlar bilan siz o'zingiz intervyudan o'tasiz.</div>
       </div>
     </div>
   </div>
@@ -460,14 +465,15 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
 <section class="cta-section">
   <div class="cta-glow"></div>
   <h2>Bugun boshlang.<br><span style="color:var(--green)">Ertaga kech.</span></h2>
-  <p>AI texnologiyalari misli ko'rilmagan tezlikda o'smoqda. Har bir boy berilgan kun — raqobatchilardan ortda qolish demakdir.</p>
+  <p>AI soha tez o'zgarmoqda. Har kuni kutish — orqada qolish.</p>
   <a href="/login" class="btn-primary" style="font-size:15px;padding:18px 48px">Hoziroq boshlash →</a>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-logo">BECOME<em>AI</em></div>
-  <div class="footer-text" style="margin-top:8px">© <span id="year"></span> BecomeAI — O'zbekistonda AI ta'lim ekotizimi.</div>
+  <!-- FIX: Yil 2026 ga yangilandi -->
+  <div class="footer-text" style="margin-top:8px">© 2026 BecomeAI — O'zbekistonda AI ta'lim</div>
   <div class="footer-text" style="margin-top:4px">
     <a href="/login" style="color:var(--green);text-decoration:none">Kirish</a>
     &nbsp;·&nbsp;
@@ -477,25 +483,20 @@ footer{border-top:1px solid var(--border);padding:40px;text-align:center}
   </div>
 </footer>
 
+<!-- FIX: Mukammal ishlovchi FAQ JavaScript kodi -->
 <script>
-// Dynamic Year
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// Improved Accordion FAQ
-document.querySelectorAll('.faq-item').forEach(item => {
-  const header = item.querySelector('.faq-q');
-  header.addEventListener('click', () => {
-    const isOpen = item.classList.contains('open');
-    
-    // Boshqa ochiq FAQ larni yopish
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    
-    // Agar hozirgisi yopiq bo'lsa, uni ochish
-    if (!isOpen) {
-      item.classList.add('open');
+function toggleFaq(el) {
+  const currentItem = el.parentElement;
+  const allItems = document.querySelectorAll('.faq-item');
+  
+  allItems.forEach(item => {
+    if (item !== currentItem) {
+      item.classList.remove('open');
     }
   });
-});
+  
+  currentItem.classList.toggle('open');
+}
 </script>
 </body>
 </html>
